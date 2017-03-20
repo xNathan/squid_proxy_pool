@@ -12,8 +12,23 @@ monkey.patch_all()
 
 import os
 import time
+import logging
 import requests
 from gevent.pool import Pool
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter(
+    '%(asctime)s - %(name)s - %(levelname)s: - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S')
+
+# 使用StreamHandler输出到屏幕
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+ch.setFormatter(formatter)
+
+logger.addHandler(ch)
+
 
 # Squid的配置文件语法
 # 将请求转发到父代理
@@ -29,17 +44,17 @@ def check_proxy(proxy):
     :param proxy list:[ip, port]"""
     global GOOD_PROXIES
     ip, port = proxy
-    _proxies ={
+    _proxies = {
         'http': '{}:{}'.format(ip, port)
     }
     try:
         res = requests.get(
             'http://1212.ip138.com/ic.asp', proxies=_proxies, timeout=10)
         assert ip in res.content
-        print '[GOOD] - {}:{}'.format(ip, port)
+        logger.info('[GOOD] - {}:{}'.format(ip, port))
         GOOD_PROXIES.append(proxy)
     except Exception, e:
-        print '[BAD] - {}:{}'.format(ip, port)
+        logger.error('[BAD] - {}:{}, {}'.format(ip, port, e))
 
 
 def update_conf():
@@ -59,11 +74,11 @@ def get_proxy():
     api_url = 'http://s.zdaye.com/?api=YOUR_API&count=100&fitter=1&px=2'
     res = requests.get(api_url).content
     if len(res) == 0:
-        print 'no data'
+        logger.error('no data')
     elif 'bad' in res:
-        print 'bad request'
+        logger.error('bad request')
     else:
-        print 'get all proxies'
+        logger.info('get all proxies')
         proxies = []
         for line in res.split():
             proxies.append(line.strip().split(':'))
@@ -73,7 +88,7 @@ def get_proxy():
         update_conf()
         # 3. 重新加载配置文件
         os.system('squid -k reconfigure')
-        print 'done'
+        logger.info('>>>> DONE! <<<<')
 
 
 def main():
