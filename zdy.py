@@ -10,9 +10,13 @@ Github: github.com/xNathan
 import os
 import time
 import requests
+
+
 # Squid的配置文件语法
 # 将请求转发到父代理
 PEER_CONF = "cache_peer %s parent %s 0 no-query weighted-round-robin weight=1 connect-fail-limit=2 allow-miss max-conn=5\n"
+
+
 def update_conf(proxies):
     with open('/etc/squid/squid.conf.original', 'r') as F:
         squid_conf = F.readlines()
@@ -21,6 +25,8 @@ def update_conf(proxies):
         squid_conf.append(PEER_CONF % (proxy[0], proxy[1]))
     with open('/etc/squid/squid.conf', 'w') as F:
         F.writelines(squid_conf)
+
+
 def get_proxy():
     # 1. 获取代理IP资源
     api_url = 'http://s.zdaye.com/?api=YOUR_API&count=100&fitter=1&px=2'
@@ -39,13 +45,17 @@ def get_proxy():
         # 3. 重新加载配置文件
         os.system('squid -k reconfigure')
         print 'done'
+
+
 def main():
     start = time.time()
     while True:
-        # 每60秒获取一批新IP
-        if time.time() - start >= 60:
+        # 每30秒获取一批新IP
+        if time.time() - start >= 30:
             get_proxy()
+            start = time.time()
         time.sleep(5)
-        start = time.time()
+
+
 if __name__ == '__main__':
     main()
