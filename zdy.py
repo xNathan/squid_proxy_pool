@@ -29,9 +29,12 @@ def check_proxy(proxy):
     :param proxy list:[ip, port]"""
     global GOOD_PROXIES
     ip, port = proxy
+    _proxies ={
+        'http': '{}:{}'.format(ip, port)
+    }
     try:
         res = requests.get(
-            'http://1212.ip138.com/ic.asp', proxies=proxy, timeout=10)
+            'http://1212.ip138.com/ic.asp', proxies=_proxies, timeout=10)
         assert ip in res.content
         print '[GOOD] - {}:{}'.format(ip, port)
         GOOD_PROXIES.append(proxy)
