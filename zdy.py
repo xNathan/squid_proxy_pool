@@ -13,7 +13,7 @@ monkey.patch_all()
 import os
 import time
 import requests
-from monkey.pool import Pool
+from gevent.pool import Pool
 
 # Squid的配置文件语法
 # 将请求转发到父代理
