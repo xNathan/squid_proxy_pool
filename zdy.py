@@ -48,7 +48,7 @@ def check_proxy(proxy):
     ip, port = proxy
     _proxies = {"http": "{}:{}".format(ip, port)}
     try:
-        ip_url = "http://1212.ip138.com/ic.asp"
+        ip_url = "http://2019.ip138.com/ic.asp"
         res = requests.get(ip_url, proxies=_proxies, timeout=10)
         assert ip in res.content
         logger.info("[GOOD] - {}:{}".format(ip, port))
