@@ -9,11 +9,11 @@
 ## 运行
 
 1. 备份原始squid配置文件
-   `cp /etc/squid/squid.conf /etc/squid/squid.conf`
+   `sudo cp /etc/squid/squid.conf /etc/squid/squid.conf`
 
 2. 购买 [站大爷](http://ip.zdaya.com) 短效代理 API，修改 `zdy.py`，将 `api_url = 'http://s.zdaye.com/?api=YOUR_API&count=100&fitter=1&px=2'` 改为自己的 api 地址
 
-3. 运行zdy.py
+3. 运行 `sudo python zdy.py`，由于要写文件和重新加载配置，所以要使用 `sudo` 运行。
 
 ## 检测
 
